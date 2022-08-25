@@ -1,0 +1,159 @@
+Q1.
+
+mysql> create table person(
+    -> id int PRIMARY KEY,
+    -> email varchar(20)
+    -> );
+Query OK, 0 rows affected (0.19 sec)
+
+mysql> desc person;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| id    | int         | NO   | PRI | NULL    |       |
+| email | varchar(20) | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> insert into person values(1,"a@b.com");
+Query OK, 1 row affected (0.06 sec)
+
+mysql> insert into person values(2,"c@d.com");
+Query OK, 1 row affected (0.09 sec)
+
+mysql> insert into person values(3,"a@b.com");
+Query OK, 1 row affected (0.09 sec)
+
+mysql> select email from person group by email HAVING COUNT(email)>1;
++---------+
+| email   |
++---------+
+| a@b.com |
++---------+
+1 row in set (0.00 sec)
+
+Q2.
+
+1.
+
+mysql> select salary from worker where salary=(select max(salary) from worker wh
+ere salary<(select max(salary) from worker));
++--------+
+| salary |
++--------+
+| 300000 |
++--------+
+1 row in set (0.08 sec)
+
+2.
+
+mysql> select DISTINCT salary from worker ORDER BY salary DESC limit 5;
++--------+
+| salary |
++--------+
+| 500000 |
+| 300000 |
+| 200000 |
+| 100000 |
+|  90000 |
++--------+
+5 rows in set (0.00 sec)
+
+3.
+
+mysql> select * from worker where worker_id%2=0;
++-----------+------------+-----------+--------+---------------------+-----------
+-+
+| WORKER_ID | FIRST_NAME | LAST_NAME | SALARY | JOINING_DATE        | DEPARTMENT
+ |
++-----------+------------+-----------+--------+---------------------+-----------
+-+
+|         2 | Niharika   | Verma     |  80000 | 2014-06-11 09:00:00 | Admin
+ |
+|         4 | Amitabh    | Singh     | 500000 | 2014-02-20 09:00:00 | Admin
+ |
+|         6 | Vipul      | Diwan     | 200000 | 2014-06-11 09:00:00 | Account
+ |
+|         8 | Geetika    | Chauhan   |  90000 | 2014-04-11 09:00:00 | Admin
+ |
++-----------+------------+-----------+--------+---------------------+-----------
+-+
+4 rows in set (0.00 sec)
+
+4.
+
+mysql> select COUNT(*), department from worker GROUP BY department ORDER BY coun
+t(*) DESC;
++----------+------------+
+| COUNT(*) | department |
++----------+------------+
+|        4 | Admin      |
+|        2 | HR         |
+|        2 | Account    |
++----------+------------+
+3 rows in set (0.00 sec)
+
+5.
+
+mysql> select * from worker where salary IN(select salary from worker group by s
+alary having count(*)>1);
++-----------+------------+-----------+--------+---------------------+-----------
+-+
+| WORKER_ID | FIRST_NAME | LAST_NAME | SALARY | JOINING_DATE        | DEPARTMENT
+ |
++-----------+------------+-----------+--------+---------------------+-----------
+-+
+|         4 | Amitabh    | Singh     | 500000 | 2014-02-20 09:00:00 | Admin
+ |
+|         5 | Vivek      | Bhati     | 500000 | 2014-06-11 09:00:00 | Admin
+ |
++-----------+------------+-----------+--------+---------------------+-----------
+-+
+2 rows in set (0.17 sec)
+
+Q3.
+
+1.
+
+mysql> select * from employeeDetails where fullname REGEXP "^.{2}hn.*";
++-------+-----------+-----------+---------------+---------+
+| empid | fullname  | managerid | dateofjoining | city    |
++-------+-----------+-----------+---------------+---------+
+|   121 | John Snow |       321 | 2014-01-31    | Toronto |
++-------+-----------+-----------+---------------+---------+
+1 row in set (0.00 sec)
+
+2.
+
+mysql> select * from employeeDetails where empid IN(select empid from employeesa
+lary);
++-------+--------------+-----------+---------------+------------+
+| empid | fullname     | managerid | dateofjoining | city       |
++-------+--------------+-----------+---------------+------------+
+|   121 | John Snow    |       321 | 2014-01-31    | Toronto    |
+|   321 | Walter White |       986 | 2015-01-30    | California |
+|   421 | Kuldeep Rana |       876 | 2016-11-27    | New Delhi  |
++-------+--------------+-----------+---------------+------------+
+3 rows in set (0.03 sec)
+
+3.
+
+mysql> select * from employeeDetails where empid NOT IN(select empid from employ
+eesalary);
+Empty set (0.04 sec)
+
+4.
+
+mysql> select max(salary), min(salary), avg(salary) from employeesalary;
++-------------+-------------+-------------+
+| max(salary) | min(salary) | avg(salary) |
++-------------+-------------+-------------+
+|       12000 |        8000 |  10000.0000 |
++-------------+-------------+-------------+
+1 row in set (0.05 sec)
+
+5.
+
+mysql> select * from employeesalary where project=NULL;
+Empty set (0.05 sec)
+
